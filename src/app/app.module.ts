@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
@@ -16,6 +16,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import * as Sentry from "@sentry/angular";
+import { Router } from "@angular/router";
+
 import { environment } from 'environments/environment';
 
 const routerConfig: ExtraOptions = {
@@ -50,7 +53,26 @@ const routerConfig: ExtraOptions = {
     ],
     bootstrap   : [
         AppComponent
-    ]
+    ],
+    providers: [
+        {
+          provide: ErrorHandler,
+          useValue: Sentry.createErrorHandler({
+            showDialog: true,
+          }),
+        },
+        {
+          provide: Sentry.TraceService,
+          deps: [Router],
+        },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: () => () => {},
+          deps: [Sentry.TraceService],
+          multi: true,
+        },
+      ],
+
 })
 export class AppModule
 {

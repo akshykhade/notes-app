@@ -93,7 +93,8 @@
                         mat-flat-button
                         [color]="'primary'"
                         [disabled]="!note.title && !note.content"
-                        (click)="createNote(note)">
+                        (click)="createNote(note)"
+                        matDialogClose>
                         Save
                     </button>
                 </div>

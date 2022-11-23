@@ -196,6 +196,7 @@ export class NotesService
      */
     updateNote(note: Note): Observable<Note>
     {
+        if(note.id == null) return of(note);
         // Clone the note to prevent accidental reference based updates
         const updatedNote = cloneDeep(note) as any;
         delete updatedNote.id
